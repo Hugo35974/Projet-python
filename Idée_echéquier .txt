@@ -1,0 +1,10 @@
+Projet Echéquier : 
+- Mettre en place le jeux d'échec avec ses règles associées
+- Mettre en place une classe IA à utiliser 2 fois afin de faire jouer les IA entre elle
+- Mettre en place une méthode d'apprentissage différente : SOLVER
+- Tester IA vs SOLVER
+- Ajouter un mode pour pouvoir jouer en 1vs1/ 1vsIA (choix de l'IA possible : 
+	IA 1000 parties d'entrainements
+	IA 500 parties d'entrainements
+	IA 100 parties d'entrainements)
+- Mettre moyen de regarder une partie entre IA et pouvoir accélérer le jeux (x1.5 par ex)
