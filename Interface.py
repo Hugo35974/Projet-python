@@ -1,23 +1,25 @@
 import sys
 
 import pygame
-from piece import *
+
 from Couleurs import *
+from piece import *
+
 
 class newBoard:
-    def __init__(self, Width, Height, Rows, Cols, Square, Win):
-        self.Width = Width
-        self.Height = Height
-        self.Square = Square
+    def __init__(self, Win):
+        self.Width = Couleurs.getWidth()
+        self.Height = Couleurs.getHeight()
+        self.Square = Couleurs.getSquare()
         self.GameBoard = self.Width // 2
         self.Win = Win
-        self.Rows = Rows
-        self.Cols = Cols
+        self.Rows = Couleurs.getRows
+        self.Cols = Couleurs.getCols()
         self.Board = []
         self.create_Board()
 
         # Créer une surface distincte pour le plateau d'échecs
-        self.board_surface = pygame.Surface((Square * Cols, Square * Rows))
+        self.board_surface = pygame.Surface((self.Square * self.Cols, self.Square * self.Rows))
 
     def create_Board(self):
         for row in range(self.Rows):

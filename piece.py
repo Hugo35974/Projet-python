@@ -1,3 +1,6 @@
+import Couleurs
+
+
 class Piece:
     def __init__(self, couleur):
         self.couleur = couleur  # 'blanche' ou 'noire'
