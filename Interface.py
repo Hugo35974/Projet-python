@@ -16,6 +16,9 @@ class newBoard:
         self.Board = []
         self.create_Board()
 
+        # Créer une surface distincte pour le plateau d'échecs
+        self.board_surface = pygame.Surface((Square * Cols, Square * Rows))
+
     def create_Board(self):
         for row in range(self.Rows):
             self.Board.append([None for _ in range(self.Cols)])
@@ -56,17 +59,15 @@ class newBoard:
                 piece.first_move = False
 
     def draw_Board(self):
-        self.Win.fill(brown)
-
+        # Dessiner le plateau d'échecs sur la surface distincte
+        self.board_surface.fill(brown)
         for row in range(self.Rows):
             for col in range(row % 2, self.Cols, 2):
-                pygame.draw.rect(self.Win, White, (self.Square * col, self.Square * row, self.Square, self.Square))
+                pygame.draw.rect(self.board_surface, White, (self.Square * col, self.Square * row, self.Square, self.Square))
+
+        # Afficher la surface du plateau d'échecs sur la fenêtre principale
+        self.Win.blit(self.board_surface, (self.GameBoard, 0))
 
     def draw_piece(self, piece, Win):
         if piece is not None:
-            Win.blit(piece.image, (piece.x, piece.y))
-
-    def draw_pieces(self):
-        for row in range(self.Rows):
-            for col in range(self.Cols):
-                self.draw_piece(self.Board[row][col], self.Win)
+            Win.blit(piece.image, (piece.x + self.GameBoard, piece.y))
