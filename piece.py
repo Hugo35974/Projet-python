@@ -1,6 +1,12 @@
+import Couleurs
+
+
 class Piece:
-    def __init__(self, couleur):
-        self.couleur = couleur  # 'blanche' ou 'noire'
+    def __init__(self, couleur,name):
+        self.couleur = couleur
+        self.name = name
+        self.image = self.SVG()
+
 
     def deplacements_possibles(self, position_actuelle, grille):
         """
@@ -10,10 +16,16 @@ class Piece:
         :return: Liste de tuples (ligne, colonne) représentant les positions où la pièce peut se déplacer.
         """
         raise NotImplementedError("Erreur de déplacement")
+    
+    def SVG(self):
+        pieces_dict = Couleurs.getImage()
+        return pieces_dict[self.name]
 
 class Tour(Piece):
     def __init__(self, couleur):
-        super().__init__(couleur)
+        self.name = "Tour"
+        super().__init__(couleur,f"{self.name}_{couleur}")
+
 
     def deplacements_possibles(self, position_actuelle, grille):
         lignes, colonnes = grille.taille
@@ -32,7 +44,8 @@ class Tour(Piece):
 
 class Fou(Piece):
     def __init__(self, couleur):
-        super().__init__(couleur)
+        self.name = "Fou"
+        super().__init__(couleur,f"{self.name}_{couleur}")
 
     def deplacements_possibles(self, position_actuelle, grille):
         lignes, colonnes = grille.taille
@@ -55,7 +68,8 @@ class Fou(Piece):
 
 class Roi(Piece):
     def __init__(self, couleur):
-        super().__init__(couleur)
+        self.name = "Roi"
+        super().__init__(couleur,f"{self.name}_{couleur}")
 
     def deplacements_possibles(self, position_actuelle, grille):
         lignes, colonnes = grille.taille
@@ -76,7 +90,8 @@ class Roi(Piece):
 
 class Reine(Piece):
     def __init__(self, couleur):
-        super().__init__(couleur)
+        self.name = "Reine"
+        super().__init__(couleur,f"{self.name}_{couleur}")
 
     def deplacements_possibles(self, position_actuelle, grille):
         lignes, colonnes = grille.taille
@@ -99,7 +114,8 @@ class Reine(Piece):
 
 class Cavalier(Piece):
     def __init__(self, couleur):
-        super().__init__(couleur)
+        self.name = "Cavalier"
+        super().__init__(couleur,f"{self.name}_{couleur}")
 
     def deplacements_possibles(self, position_actuelle, grille):
         lignes, colonnes = grille.taille
@@ -124,14 +140,14 @@ class Cavalier(Piece):
 
 class Pion(Piece):
     def __init__(self, couleur):
-        super().__init__(couleur)
+        self.name = "Pion"
+        super().__init__(couleur, f"{self.name}_{couleur}")
 
     def deplacements_possibles(self, position_actuelle, grille):
         lignes, colonnes = grille.taille
         deplacements = []
 
-        direction = 1 if self.couleur == 'blanche' else -1
-
+        direction = 1 if self.couleur == 'Blanc' else -1
 
         nouvelle_ligne = position_actuelle[0] + direction
         nouvelle_colonne = position_actuelle[1]
@@ -139,8 +155,8 @@ class Pion(Piece):
             deplacements.append((nouvelle_ligne, nouvelle_colonne))
 
             if (
-                (self.couleur == 'blanche' and position_actuelle[0] == 1) or
-                (self.couleur == 'noire' and position_actuelle[0] == lignes - 2)
+                (self.couleur == 'Blanc' and position_actuelle[0] == 1) or
+                (self.couleur == 'Noir' and position_actuelle[0] == lignes - 2)
             ):
                 nouvelle_ligne = position_actuelle[0] + 2 * direction
                 if grille.case_est_vide((nouvelle_ligne, nouvelle_colonne)):
@@ -154,60 +170,5 @@ class Pion(Piece):
                 deplacements.append((nouvelle_ligne, nouvelle_colonne))
 
         return deplacements
-    
 
-class PionBlanc(Pion):
-    def __init__(self):
-        super().__init__('blanche')
-
-    def deplacements_possibles(self, position_actuelle, grille):
-        lignes, colonnes = grille.taille
-        deplacements = []
-
-        direction = 1
-
-        nouvelle_ligne = position_actuelle[0] + direction
-        nouvelle_colonne = position_actuelle[1]
-        if 0 <= nouvelle_ligne < lignes and grille.case_est_vide((nouvelle_ligne, nouvelle_colonne)):
-            deplacements.append((nouvelle_ligne, nouvelle_colonne))
-
-            if position_actuelle[0] == 1 and grille.case_est_vide((nouvelle_ligne + direction, nouvelle_colonne)):
-                deplacements.append((nouvelle_ligne + direction, nouvelle_colonne))
-
-        for delta_colonne in [-1, 1]:
-            nouvelle_colonne = position_actuelle[1] + delta_colonne
-            if 0 <= nouvelle_ligne < lignes and 0 <= nouvelle_colonne < colonnes and not grille.case_est_vide(
-                (nouvelle_ligne, nouvelle_colonne)
-            ) and grille.piece_a_couleur((nouvelle_ligne, nouvelle_colonne)) != self.couleur:
-                deplacements.append((nouvelle_ligne, nouvelle_colonne))
-
-        return deplacements
-
-
-class PionNoir(Pion):
-    def __init__(self):
-        super().__init__('noire')
-
-    def deplacements_possibles(self, position_actuelle, grille):
-        lignes, colonnes = grille.taille
-        deplacements = []
-
-        direction = -1
-
-        nouvelle_ligne = position_actuelle[0] + direction
-        nouvelle_colonne = position_actuelle[1]
-        if 0 <= nouvelle_ligne < lignes and grille.case_est_vide((nouvelle_ligne, nouvelle_colonne)):
-            deplacements.append((nouvelle_ligne, nouvelle_colonne))
-
-            if position_actuelle[0] == lignes - 2 and grille.case_est_vide((nouvelle_ligne + direction, nouvelle_colonne)):
-                deplacements.append((nouvelle_ligne + direction, nouvelle_colonne))
-
-        for delta_colonne in [-1, 1]:
-            nouvelle_colonne = position_actuelle[1] + delta_colonne
-            if 0 <= nouvelle_ligne < lignes and 0 <= nouvelle_colonne < colonnes and not grille.case_est_vide(
-                (nouvelle_ligne, nouvelle_colonne)
-            ) and grille.piece_a_couleur((nouvelle_ligne, nouvelle_colonne)) != self.couleur:
-                deplacements.append((nouvelle_ligne, nouvelle_colonne))
-
-        return deplacements
 
