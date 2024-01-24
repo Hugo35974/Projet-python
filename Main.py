@@ -1,6 +1,4 @@
-
 import sys
-
 import pygame
 from Boutons import *
 from pygame.locals import MOUSEBUTTONDOWN, QUIT
@@ -38,7 +36,6 @@ if __name__ == "__main__":
                 mouse_pos = pygame.mouse.get_pos()
                 if play_button_rect.collidepoint(mouse_pos):
                     print("Jouer")
-                    Boutons.cacher(win=game_win, main_button=True)
                 elif settings_button_rect.collidepoint(mouse_pos):
                     print("Paramètre")
                 elif quit_button_rect.collidepoint(mouse_pos):
@@ -47,6 +44,7 @@ if __name__ == "__main__":
 
         # Dessiner le plateau d'échecs
         chess_board.draw_Board()
+        chess_board.draw_pieces()
 
         # Dessiner les boutons
         play_button_rect, settings_button_rect, quit_button_rect = draw_buttons(game_win)
