@@ -4,8 +4,10 @@ import pygame
 
 #Couleurs
 Bg = (47, 79, 79)
-Black = (0, 0, 0)
-White = (255, 255, 255)
+Noir = "Noir"
+Blanc = "Blanc"
+Black = (0,0,0)
+White=(255,255,255)
 beige = (245, 245, 220)
 brown_chocolate = (210, 105, 30)
 brown = (87, 16, 16)
