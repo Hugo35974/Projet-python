@@ -1,5 +1,6 @@
-import pygame
 import os
+
+import pygame
 
 #Taille
 Width, Height = 760, 760
@@ -16,18 +17,12 @@ brown = (87, 16, 16)
 cornsilk = (255, 248, 220)
 Green = (0, 255, 0)
 
-#Images
-#Pièces noire
-Black_Knight = pygame.transform.scale(pygame.image.load(os.path.join("./chess_images","bKN.png")), (Square, Square))
-Black_Bishop = pygame.transform.scale(pygame.image.load(os.path.join("./chess_images", "bB.png")), (Square, Square))
-Black_King = pygame.transform.scale(pygame.image.load(os.path.join("./chess_images", "bK.png")), (Square, Square))
-Black_pawn = pygame.transform.scale(pygame.image.load(os.path.join("./chess_images", "bP.png")), (Square, Square))
-Black_Queen = pygame.transform.scale(pygame.image.load(os.path.join("./chess_images", "bQ.png")), (Square, Square))
-Black_Rook = pygame.transform.scale(pygame.image.load(os.path.join("./chess_images", "bR.png")), (Square, Square))
-#Pièces blanches
-White_Knight = pygame.transform.scale(pygame.image.load(os.path.join("./chess_images", "wKN.png")), (Square, Square))
-White_bishop = pygame.transform.scale(pygame.image.load(os.path.join("./chess_images", "wB.png")), (Square, Square))
-White_King = pygame.transform.scale(pygame.image.load(os.path.join("./chess_images", "wK.png")), (Square, Square))
-White_pawn = pygame.transform.scale(pygame.image.load(os.path.join("./chess_images", "wp.png")), (Square, Square))
-White_Queen = pygame.transform.scale(pygame.image.load(os.path.join("./chess_images", "wQ.png")), (Square, Square))
-White_Rook = pygame.transform.scale(pygame.image.load(os.path.join("./chess_images", "wR.png")), (Square, Square))
+pieces_dict = {}
+path = "./chess_images"
+
+for piece in os.listdir(path):
+    if piece.endswith(".png"):
+        nomPiece = os.path.splitext(piece)[0]
+        file_path = os.path.join("./chess_images", piece)
+        image = pygame.transform.scale(pygame.image.load(file_path), (Square, Square))
+        pieces_dict[nomPiece] = image
