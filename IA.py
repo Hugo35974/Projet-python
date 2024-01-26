@@ -1,11 +1,13 @@
 
 class IA:
-    def __init__(self, echequier, couleur):
+    def __init__(self, echequier, couleur, recursivite=0):
 
         self.echequier = echequier
 
         self.couleur = couleur
         self.couleurOpposee = 'Noir' if couleur == 'Blanc' else 'Blanc'
+        self.recursivite = recursivite
+        self.listeMouvements = []  # Ajout de l'attribut liste de mouvements
 
         self.valeurPieces = {
             ('Pion', self.couleur): -10,
@@ -24,30 +26,30 @@ class IA:
 
     def arbre_nFils_pProfondeur(self, n=5, echequier=None, p=3, niveauActuel=0):
         """
-            Cette fonction permet d'optenir un TREE par recursivite.
-
-            Elle renvoie les n meilleurs mouvements à realiser à partir
-            d'un nombre de points.
+        Cette fonction permet d'obtenir un TREE par récursivité.
+        Elle renvoie les n meilleurs mouvements à réaliser à partir
+        d'un nombre de points.
         """
 
         if echequier is None:
             echequier = self.echequier
 
-        listeMouvements = []
-        niveauActuel += 1
+        if niveauActuel < p and self.recursivite <= n:
+            print("\n_______\nrecurs : ", self.recursivite, "\n")
+            self.recursivite += 1
 
-        if not niveauActuel > 3:
-            # Vous devez passer le joueur actuel (self.current_player) comme troisième argument
-            listeMouvements = self.listeTousMeilleursMouvements(echequier, self.echequier.current_player, niveauActuel)
+            self.listeTousMeilleursMouvements(echequier, self.echequier.current_player,
+                                                                     niveauActuel)
+            self.listeMouvements = self.listeMouvements[0:n]
 
-            listeMouvements = listeMouvements[0:n]
 
-            for mouvement in listeMouvements:
+            for mouvement in self.listeMouvements:
                 if niveauActuel == 1:
-                    print((
-                        echequier.indexToNomCase(mouvement.indexDepart),
-                        echequier.indexToNomCase(mouvement.indexArrivee)
-                    ))
+                    #print((
+                    #    echequier.indexToNomCase(mouvement.indexDepart),
+                    #    echequier.indexToNomCase(mouvement.indexArrivee)
+                    #))
+                    pass
 
                 echiquierTemp = echequier.copy()  # Utilisez une copie de l'échiquier
 
@@ -55,15 +57,16 @@ class IA:
 
                 meilleurCoupAdversaire = self.listeTousMeilleursMouvements(echiquierTemp, self.echequier.current_player,
                                                                            niveauActuel)
+                print('test1111', self.meilleurCoupAdversaire)
                 meilleurCoupAdversaire = meilleurCoupAdversaire[0]
 
                 echiquierTemp.deplacerPieceEnIndex(meilleurCoupAdversaire.indexDepart,
                                                    meilleurCoupAdversaire.indexArrivee)
 
-                listeMouvementsSuivants = self.arbre_nFils_pProfondeur(n, echiquierTemp, p, niveauActuel)
+                listeMouvementsSuivants = self.arbre_nFils_pProfondeur(n, echiquierTemp, p, niveauActuel + 1)
                 mouvement.set_listeMouvementsSuivants(listeMouvementsSuivants)
 
-            return listeMouvements
+        return
 
     def listeTousMeilleursMouvements(self, echequier, current_player, niveauProfondeur):
         """
@@ -82,13 +85,13 @@ class IA:
                             if self.echequier.est_deplacement_valide(piece, position):
                                 listeCoupsPossibles.append(((i, j), (x, y)))  # Utilisez des tuples pour les indices
 
-        listeMouvements = []  # Initialisez la listeMouvements ici
+        self.listeMouvements = []  # Initialisez la listeMouvements ici
 
         # pour tous les déplacements possibles
         for (indexDepart, indexArrivee) in listeCoupsPossibles:
             piece = echequier.get_piece(indexDepart)
             name = piece.name.split('_')
-            print(name)
+            #print(name)
             valeurPiece = self.valeurPieces[(name[0], piece.couleur)]
 
             # moins de points si la pièce peut se faire manger
@@ -97,12 +100,12 @@ class IA:
             # moins de points si elle n'a aucune pièce de la même couleur autour
 
             # ajout d'un nouveau mouvement à la liste
-            listeMouvements.append(Mouvement(indexDepart, indexArrivee, valeurPiece, niveauProfondeur))
+            self.listeMouvements.append(Mouvement(indexDepart, indexArrivee, valeurPiece, niveauProfondeur))
 
+        print('test', self.listeMouvements)
         # triez les éléments par points
-        listeMouvements = self.trierMouvements(listeMouvements)
-
-        return listeMouvements
+        self.listeMouvements = self.trierMouvements(self.listeMouvements)
+        print('test22222', self.listeMouvements)
 
     def meilleurMouvement(self, listeMouvements=None, niveau=0, niveauMax=None):
 
@@ -114,14 +117,14 @@ class IA:
         #        print(listeMouvements)
         # à l'initialisation
         if niveau == 0:
-            listeMouvements = self.arbre_nFils_pProfondeur()
+            self.arbre_nFils_pProfondeur()
         #            print('=====')
 
         #        print(listeMouvements)
 
         if niveauMax is None:
             niveauMax = 0
-            premier_fils = listeMouvements[0]
+            premier_fils = self.listeMouvements[0]
             while not premier_fils.listeMouvementsSuivants == None:
                 premier_fils = premier_fils.listeMouvementsSuivants[0]
                 niveauMax += 1
