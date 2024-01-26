@@ -146,3 +146,52 @@ class newBoard:
                     piece_y = row * self.Square
                     self.Win.blit(piece.image, (piece_x, piece_y))
 
+    #Fonctions dédiées pour l'IA
+    def coefficientPointsSiPeutEtreMangee(self, position):
+        if 0 <= position[0] < self.Rows and 0 <= position[1] < self.Cols:
+            piece = self.Board[position[0]][position[1]]
+            if piece:
+                # Ajoutez ici votre logique pour déterminer le coefficient de points
+                # en fonction de si la pièce à la position spécifiée peut être mangée.
+                # Vous pouvez retourner la valeur appropriée en fonction de votre logique.
+                return 1  # Exemple : si la pièce peut être mangée, retourne 1
+        return 0  # Par défaut, retourne 0 si la position est hors limites ou si la case est vide
+
+    def indexToNomCase(self, index):
+        """
+        Cette fonction convertit un index (ligne, colonne) en nom de case (par exemple, 'A1').
+        """
+        if 0 <= index[0] < self.Rows and 0 <= index[1] < self.Cols:
+            lettre_colonne = chr(ord('A') + index[1])
+            numero_ligne = str(index[0] + 1)
+            return lettre_colonne + numero_ligne
+        else:
+            return None
+
+    def copy(self):
+        #Création d'une copie de l'échequier
+        copied_board = newBoard(self.Win)
+        copied_board.Width = self.Width
+        copied_board.Height = self.Height
+        copied_board.Square = self.Square
+        copied_board.GameBoard = self.GameBoard
+        copied_board.Rows = self.Rows
+        copied_board.Cols = self.Cols
+        copied_board.current_player = self.current_player
+
+        # Copy the actual board state
+        copied_board.Board = [row[:] for row in self.Board]
+
+        return copied_board
+
+    def deplacerPieceEnIndex(self, indexDepart, indexArrivee):
+        """
+        Move a piece from the starting index to the destination index.
+        """
+        piece = self.get_piece(indexDepart)
+
+        if piece is not None:
+            self.Board[indexDepart[0]][indexDepart[1]] = None  # Empty the starting position
+            self.Board[indexArrivee[0]][indexArrivee[1]] = piece  # Place the piece in the destination position
+        else:
+            print("No piece found at the starting position.")
