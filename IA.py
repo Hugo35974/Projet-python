@@ -24,19 +24,11 @@ class IA:
 
     def arbre_nFils_pProfondeur(self, n=5, echequier=None, p=3, niveauActuel=0):
         """
-                Cette fonction permet d'optenir un TREE par recursivite.
+            Cette fonction permet d'optenir un TREE par recursivite.
 
-                Elle renvoie les n meilleurs mouvements à realiser à partir
-                d'un nombre de points.
-
-                Le nombre de points est definit en fonction d'une valeur affectee
-                à la piece ainsi qu'avec des points en moins si elle peut être
-                mangée après le déplacement.
-
-                Chaque mouvement contient une liste des n meilleurs mouvements
-                suivants, si l'adversaire aurait joue le coups suivant rapportant
-                le plus grand nombre de points.
-                """
+            Elle renvoie les n meilleurs mouvements à realiser à partir
+            d'un nombre de points.
+        """
 
         if echequier is None:
             echequier = self.echequier
@@ -76,13 +68,7 @@ class IA:
     def listeTousMeilleursMouvements(self, echequier, current_player, niveauProfondeur):
         """
         Cette fonction renvoie tous les déplacements possibles triés
-        d'une couleur avec un objet de la classe mouvement contenant :
-            - l'index de la pièce à déplacer
-            - l'index d'arrivée de la pièce à déplacer
-            - les points affectés à la pièce
-            - le niveau de la profondeur du mouvement
-
-        Cette fonction renvoie des objets Mouvement
+        d'une couleur avec un objet de la classe mouvement contenant
         """
         listeCoupsPossibles = []
 
@@ -109,7 +95,6 @@ class IA:
             valeurPiece *= echequier.coefficientPointsSiPeutEtreMangee(indexArrivee)
 
             # moins de points si elle n'a aucune pièce de la même couleur autour
-            # valeurPiece *= echiquier.coefficientPointsSiPieceMemeCouleurProche(indexArrivee, current_player)
 
             # ajout d'un nouveau mouvement à la liste
             listeMouvements.append(Mouvement(indexDepart, indexArrivee, valeurPiece, niveauProfondeur))
@@ -122,15 +107,8 @@ class IA:
     def meilleurMouvement(self, listeMouvements=None, niveau=0, niveauMax=None):
 
         """
-        Cette fonction retourne le meilleur mouvement a realiser d'apres
+        Cette fonction retourne le meilleur mouvement à realiser d'apres
         le nombre de points qu'il rapporte
-
-        Les points sont calcules de la maniere suivante :
-            - points de chaque mouvement (niveau == 1)
-            - points de chaque mouvement + moyenne des autres (niveau > 1)
-
-        Le mouvement retourne est celui du niveau 1 donc le chemmin rapporte
-        le plus de points
         """
 
         #        print(listeMouvements)
