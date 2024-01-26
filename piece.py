@@ -217,6 +217,7 @@ class Pion(Piece):
 
         for delta_colonne in [-1, 1]:
             nouvelle_colonne = coords_piece[1] + delta_colonne
+            nouvelle_ligne = coords_piece[0] + direction
             if (
                 0 <= nouvelle_ligne < lignes and
                 0 <= nouvelle_colonne < colonnes and
@@ -224,6 +225,7 @@ class Pion(Piece):
                 grille.piece_a_couleur((nouvelle_ligne, nouvelle_colonne)) != self.couleur
             ):
                 deplacements.append((nouvelle_ligne, nouvelle_colonne))
+
 
         return deplacements
 
