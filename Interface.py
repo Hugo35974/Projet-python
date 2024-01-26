@@ -161,7 +161,7 @@ class newBoard:
         new_board = newBoard(self.Win)
 
         # Copier les pièces en utilisant copy.deepcopy
-        new_board.Board = self.Board.copy()
+        new_board.Board = copy.deepcopy(self.Board)
 
         # Copier le joueur actuel
         new_board.current_player = self.current_player
