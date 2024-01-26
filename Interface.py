@@ -1,3 +1,4 @@
+import copy
 import sys
 
 import pygame
@@ -19,6 +20,7 @@ class newBoard:
         self.Board = []
         self.selected = None
         self.create_Board()
+        self.move_history = []
         self.taille = Couleurs.getRows(),Couleurs.getCols()
         self.current_player = 'Blanc'
         # Créer une surface distincte pour le plateau d'échecs
@@ -33,15 +35,27 @@ class newBoard:
 
     def play(self, position_from, position_to):
         piece = self.Board.get_piece(position_from)
-        
+
         if piece and piece.couleur == self.current_player:
             if self.Board.est_deplacement_valide(piece, position_to):
                 self.Board.move(piece, position_to)
+                
+                # Vérifier si le joueur actuel est en échec
+                if self.Board.est_en_echec(self.current_player):
+                    print(f"Le joueur {self.current_player} est en échec!")
+
                 self.switch_player()
+
+                # Vérifier si le joueur actuel est en échec et mat
+                if self.Board.est_en_echec_et_mat(self.current_player):
+                    print(f"Échec et mat, {self.current_player} a perdu!")
+                    # Ici, vous pourriez prendre d'autres mesures, comme terminer le jeu.
+
             else:
                 print("Déplacement non valide pour la pièce sélectionnée.")
         else:
             print("Aucune pièce valide sélectionnée pour le joueur en cours.")
+
             
 
     def create_Board(self):
@@ -79,13 +93,10 @@ class newBoard:
             return None
 
     def est_deplacement_valide(self, piece, position):
-        print(position)
-        print(piece.deplacements_possibles(self.coordonnees_piece(piece), self))
+        
         if piece and position in piece.deplacements_possibles(self.coordonnees_piece(piece), self):
-            print("Déplacement possible")
             return True
         else:
-            print("Déplacement non valide")
             return False
         
     def case_est_vide(self, position):
@@ -108,23 +119,100 @@ class newBoard:
             
             for i in range(self.Rows):
                 for j in range(self.Cols):
-                    if self.get_piece((i, j)) == piece:
-                        return (i, j)
+                    if self.get_piece((i, j))!= None :
+                        if self.get_piece((i, j)) == piece:
+                            return (i, j)
             return None
     
+    def est_echec(self, couleur):
+        roi_position = self.trouver_position_roi(couleur)
+        
+        # Vérifier si les pièces adverses menacent la position du roi
+        for row in range(self.Rows):
+            for col in range(self.Cols):
+                piece = self.get_piece((row, col))
+                if piece and piece.couleur != couleur:
+                    deplacements_possibles = piece.deplacements_possibles((row, col), self)
+                    if roi_position in deplacements_possibles:
+                        return True
+
+        return False
+    
+    def trouver_position_roi(self, couleur):
+        for row in range(self.Rows):
+            for col in range(self.Cols):
+                piece = self.get_piece((row, col))
+                if isinstance(piece, Roi) and piece.couleur == couleur:
+                    return (row, col)
+        return None
+    
+    def undo_last_move(self):
+        if self.move_history:
+            # Récupérer le dernier mouvement
+            last_move = self.move_history.pop()
+            # Inverser le dernier mouvement
+            piece, from_coords, to_coords = last_move
+            self.Board[from_coords[0]][from_coords[1]] = piece
+            self.Board[to_coords[0]][to_coords[1]] = None
+
+            # Mettez à jour d'autres éléments si nécessaire
+
+    def clone_board(self):
+        new_board = newBoard(self.Win)
+
+        # Copier les pièces en utilisant copy.deepcopy
+        new_board.Board = self.Board.copy()
+
+        # Copier le joueur actuel
+        new_board.current_player = self.current_player
+
+        return new_board
+    
+    def set_piece(self, position, piece):
+        row, col = position
+        self.Board[row][col] = piece
+
+    def est_en_echec_et_mat(self, couleur):
+        roi_position = self.trouver_position_roi(couleur)
+
+        # Vérifier si le roi est en échec
+        if not self.est_echec(couleur):
+            return False
+
+        # Vérifier si le roi peut échapper à l'échec en effectuant un déplacement
+        for i in range(self.Rows):
+            for j in range(self.Cols):
+                destination = (i, j)
+                if self.est_deplacement_valide(self.get_piece(roi_position), destination):
+                    # Si le roi peut effectuer un déplacement valide, ce n'est pas un échec et mat
+                    return False
+
+        # Vérifier si une autre pièce peut bloquer l'attaque
+        for i in range(self.Rows):
+            for j in range(self.Cols):
+                piece = self.get_piece((i, j))
+                if piece and piece.couleur == couleur:
+                    deplacements_possibles = piece.deplacements_possibles((i, j), self)
+                    for destination in deplacements_possibles:
+                        # Vérifier si la pièce peut bloquer l'attaque en se déplaçant
+                        if self.est_deplacement_valide(piece, destination):
+                            return False
+
+        # Si aucune condition n'est remplie, c'est un échec et mat
+        return True
+
+
 
     def move(self, piece, position):
         # Obtenez les coordonnées de la pièce avant le déplacement
         coords_avant = self.coordonnees_piece(piece)
-
+        
         if coords_avant is not None:
             # Mettez à jour la case d'origine en la rendant vide
             self.Board[coords_avant[0]][coords_avant[1]] = None
-
+            self.move_history.append((piece, coords_avant, position))
             # Placez la pièce à sa nouvelle position
             self.Board[position[0]][position[1]] = piece
-        else:
-            print("La pièce n'a pas été trouvée sur le plateau.")
 
 
     def draw_Board(self):

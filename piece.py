@@ -17,6 +17,11 @@ class Piece:
         """
         raise NotImplementedError("Erreur de déplacement")
     
+    def __deepcopy__(self, memo):
+        new_piece = self.__class__(self.couleur)
+        memo[id(self)] = new_piece
+        return new_piece
+    
     def SVG(self):
         pieces_dict = Couleurs.getImage()
         return pieces_dict[self.name]
@@ -221,3 +226,5 @@ class Pion(Piece):
                 deplacements.append((nouvelle_ligne, nouvelle_colonne))
 
         return deplacements
+
+

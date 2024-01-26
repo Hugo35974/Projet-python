@@ -19,11 +19,10 @@ if __name__ == "__main__":
 
     # Créer le plateau d'échecs
     chess_board = newBoard(game_win)  # Ajustez les paramètres en conséquence
-
-
-        
+    temp_board = newBoard(game_win)
     waiting_for_second_click = False
-    selected_position = None
+    selected_piece = None
+    echec = False
 
     while True:
         for event in pygame.event.get():
@@ -33,7 +32,6 @@ if __name__ == "__main__":
             elif event.type == MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
 
-                # Vérifier si le clic de souris est à l'intérieur du plateau d'échecs
                 if (
                     chess_board.GameBoard <= mouse_pos[0] <= chess_board.GameBoard + chess_board.Cols * chess_board.Square and
                     0 <= mouse_pos[1] <= chess_board.Rows * chess_board.Square
@@ -44,18 +42,55 @@ if __name__ == "__main__":
 
                     if not waiting_for_second_click:
                         piece = chess_board.get_piece(position)
-                        waiting_for_second_click = True
+                        if piece and piece.couleur == chess_board.current_player:
+                            waiting_for_second_click = True
+                            selected_piece = piece
+                        else:
+                            print("Sélectionnez une pièce valide.")
                     else:
-                        if chess_board.est_deplacement_valide(piece, position):
+                        if selected_piece and selected_piece.couleur == chess_board.current_player:
+                            # Copiez la situation actuelle du plateau pour vérifier si le mouvement résout l'échec
+                            temp_board = chess_board.clone_board()
+                            adverse_color = 'Noir' if chess_board.current_player == 'Blanc' else 'Blanc'
 
-                            if piece.couleur == chess_board.current_player:
+                            # Vérifier si le mouvement est valide et résout l'échec
+                            if temp_board.est_deplacement_valide(selected_piece, position):
+                                temp_board.move(selected_piece, position)
+                                
+                                # Vérifier si le joueur actuel est en échec après le mouvement
+                                if temp_board.est_echec(adverse_color):
+                                    print(f"Le joueur {adverse_color} est en échec")
+                                    
 
-                                chess_board.move(piece, position)
-                                chess_board.switch_player()
-                                waiting_for_second_click = False
+                                # Si le mouvement est valide et ne met pas le joueur actuel en échec, effectuez-le
+                                
+
+                                # Vérifier si le joueur actuel est en échec après le mouvement
+                                if chess_board.est_echec(chess_board.current_player):
+                                    if temp_board.est_echec(chess_board.current_player):
+                                        print(f"Rejouer")
+                                        temp_board.undo_last_move()
+                                        waiting_for_second_click = False
+                                        
+                                    else:
+                                        chess_board.move(selected_piece, position)
+                                        chess_board.switch_player()
+                                        waiting_for_second_click = False
+
+                                else:
+                                    chess_board.move(selected_piece, position)
+                                    chess_board.switch_player()
+                                    waiting_for_second_click = False
                             else:
-                                print("Sélectionnez une pièce valide.")
+                                print("Déplacement non valide. Rejouez.")
+                                temp_board.undo_last_move()
                                 waiting_for_second_click = False
+                        else:
+                            print("Sélectionnez une pièce valide.")
+                            temp_board.undo_last_move()
+                            waiting_for_second_click = False
+
+
 
         # Dessiner le plateau d'échecs
         chess_board.draw_Board()
