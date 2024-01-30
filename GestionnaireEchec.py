@@ -1,15 +1,6 @@
-import pygame
 
 from Interface import *
 
-
-def initialize_game(width, height):
-    pygame.init()
-    win = pygame.display.set_mode((width, height))
-    pygame.display.set_caption("Chess Game")
-    return win
-    
-game_win = initialize_game(1250, 800)
 
 class GestionnaireEchec:
     def __init__(self, chess_board):
@@ -18,7 +9,6 @@ class GestionnaireEchec:
 
     def est_mouvement_valide_resout_echec(self, selected_piece, position):
         adverse_color = 'Noir' if self.chess_board.current_player == 'Blanc' else 'Blanc'
-
         if self.chess_board.est_deplacement_valide(selected_piece, position):
             self.temp_board.move(selected_piece, position)
 
