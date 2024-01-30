@@ -33,6 +33,16 @@ class newBoard:
         else:
             self.current_player = 'Blanc'
 
+    def coefficientPointsSiPeutEtreMangee(self, position):
+        if 0 <= position[0] < self.Rows and 0 <= position[1] < self.Cols:
+            piece = self.Board[position[0]][position[1]]
+            if piece:
+                # Ajoutez ici votre logique pour déterminer le coefficient de points
+                # en fonction de si la pièce à la position spécifiée peut être mangée.
+                # Vous pouvez retourner la valeur appropriée en fonction de votre logique.
+                return 2  # Exemple : si la pièce peut être mangée, retourne 1
+        return 1  # Par défaut, retourne 0 si la position est hors limites ou si la case est vide
+    
     def play(self, position_from, position_to):
         piece = self.Board.get_piece(position_from)
 
@@ -64,9 +74,9 @@ class newBoard:
 
             for col in range(self.Cols):
                 if row == 1:
-                    self.Board[row][col] = Pion(Noir)
+                    self.Board[row][col] = Pion(Noir,col)
                 elif row == 6:
-                    self.Board[row][col] = Pion(Blanc)
+                    self.Board[row][col] = Pion(Blanc,col)
                 elif row == 0:
                     self.Board[row][col] = self.create_piece_for_row(Noir, row, col)
                 elif row == 7:
@@ -74,23 +84,25 @@ class newBoard:
 
     def create_piece_for_row(self, couleur, row, col):
         if col == 0 or col == 7:
-            return Tour(couleur)
+            return Tour(couleur,col)
         elif col == 1 or col == 6:
-            return Cavalier(couleur)
+            return Cavalier(couleur,col)
         elif col == 2 or col == 5:
-            return Fou(couleur)
+            return Fou(couleur,col)
         elif col == 3:
-            return Reine(couleur)
+            return Reine(couleur,col)
         elif col == 4:
-            return Roi(couleur)
+            return Roi(couleur,col)
         else:
             return None
 
     def get_piece(self, position):
-        if 0 <= position[0] < self.Rows and 0 <= position[1] < self.Cols:
-            return self.Board[position[0]][position[1]]
-        else:
-            return None
+        if position:
+            if 0 <= position[0] < self.Rows and 0 <= position[1] < self.Cols:
+                return self.Board[position[0]][position[1]]
+            else:
+                return None
+        else :return None
 
     def est_deplacement_valide(self, piece, position):
         
@@ -120,7 +132,7 @@ class newBoard:
             for i in range(self.Rows):
                 for j in range(self.Cols):
                     if self.get_piece((i, j))!= None :
-                        if self.get_piece((i, j)) == piece:
+                        if (self.get_piece((i, j)).value == piece.value) and (self.get_piece((i, j)).couleur == piece.couleur):
                             return (i, j)
             return None
     
@@ -234,3 +246,30 @@ class newBoard:
                     piece_y = row * self.Square
                     self.Win.blit(piece.image, (piece_x, piece_y))
 
+    def copy(self):
+        #Création d'une copie de l'échequier
+        copied_board = newBoard(self.Win)
+        copied_board.Width = self.Width
+        copied_board.Height = self.Height
+        copied_board.Square = self.Square
+        copied_board.GameBoard = self.GameBoard
+        copied_board.Rows = self.Rows
+        copied_board.Cols = self.Cols
+        copied_board.current_player = self.current_player
+
+        # Copy the actual board state
+        copied_board.Board = [row[:] for row in self.Board]
+
+        return copied_board
+
+    def deplacerPieceEnIndex(self, indexDepart, indexArrivee):
+        """
+        Move a piece from the starting index to the destination index.
+        """
+        piece = self.get_piece(indexDepart)
+
+        if piece is not None:
+            self.Board[indexDepart[0]][indexDepart[1]] = None  # Empty the starting position
+            self.Board[indexArrivee[0]][indexArrivee[1]] = piece  # Place the piece in the destination position
+        else:
+            print("No piece found at the starting position.")

@@ -7,6 +7,7 @@ from Boutons import *
 from Couleurs import *
 from GestionnaireEchec import *
 from Interface import newBoard
+from Moteur import IA
 
 
 def initialize_game(width, height):
@@ -27,7 +28,8 @@ if __name__ == "__main__":
     echec = False
 
     echec_manager = GestionnaireEchec(chess_board)
-
+    ia = IA(echequier=chess_board, couleur='Noir')
+    
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -61,8 +63,17 @@ if __name__ == "__main__":
                         else:
                             print("Sélectionnez une pièce valide.")
                             waiting_for_second_click = False
+        # Vérifier si c'est le tour de l'IA de jouer
+        # if chess_board.current_player == 'Noir':
+        #     # Obtenir le meilleur mouvement de l'IA
+        #     meilleur_mouvement = ia.meilleurMouvement()
+
+        #     # Effectuer le mouvement de l'IA
+        #     chess_board.move(chess_board.get_piece(meilleur_mouvement.indexDepart),meilleur_mouvement.indexArrivee)
 
 
+        #     # Changer de joueur
+        #     chess_board.switch_player()
 
 
         # Dessiner le plateau d'échecs

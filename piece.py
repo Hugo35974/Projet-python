@@ -1,11 +1,16 @@
+import random
+
+import numpy as np
+
 import Couleurs
 
 
 class Piece:
-    def __init__(self, couleur,name):
+    def __init__(self, couleur,name,value):
         self.couleur = couleur
         self.name = name
         self.image = self.SVG()
+        self.value = value
 
 
     def deplacements_possibles(self, position_actuelle,Board):
@@ -18,7 +23,7 @@ class Piece:
         raise NotImplementedError("Erreur de déplacement")
     
     def __deepcopy__(self, memo):
-        new_piece = self.__class__(self.couleur)
+        new_piece = self.__class__(self.couleur,self.value)
         memo[id(self)] = new_piece
         return new_piece
     
@@ -27,78 +32,81 @@ class Piece:
         return pieces_dict[self.name]
 
 class Tour(Piece):
-    def __init__(self, couleur):
+    def __init__(self, couleur,value):
         self.name = "Tour"
-        super().__init__(couleur, f"{self.name}_{couleur}")
+        super().__init__(couleur, f"{self.name}_{couleur}",value)
 
     def deplacements_possibles(self, position_actuelle, grille):
         lignes, colonnes = grille.taille
         deplacements = []
 
         directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        if position_actuelle:
+            for direction in directions:
+                nouvelle_ligne, nouvelle_colonne = position_actuelle[0] + direction[0], position_actuelle[1] + direction[1]
 
-        for direction in directions:
-            nouvelle_ligne, nouvelle_colonne = position_actuelle[0] + direction[0], position_actuelle[1] + direction[1]
+                while 0 <= nouvelle_ligne < lignes and 0 <= nouvelle_colonne < colonnes:
+                    destination = (nouvelle_ligne, nouvelle_colonne)
+                    piece_destination = grille.get_piece(destination)
 
-            while 0 <= nouvelle_ligne < lignes and 0 <= nouvelle_colonne < colonnes:
-                destination = (nouvelle_ligne, nouvelle_colonne)
-                piece_destination = grille.get_piece(destination)
+                    if grille.case_est_vide(destination) or piece_destination.couleur != self.couleur:
+                        deplacements.append(destination)
 
-                if grille.case_est_vide(destination) or piece_destination.couleur != self.couleur:
-                    deplacements.append(destination)
-
-                    if not grille.case_est_vide(destination) and piece_destination.couleur != self.couleur:
-                        # Si la case n'est pas vide et contient une pièce ennemie, on peut la prendre
+                        if not grille.case_est_vide(destination) and piece_destination.couleur != self.couleur:
+                            # Si la case n'est pas vide et contient une pièce ennemie, on peut la prendre
+                            break
+                    else:
+                        # Si la case est occupée par une pièce alliée, on ne peut pas passer à travers
                         break
-                else:
-                    # Si la case est occupée par une pièce alliée, on ne peut pas passer à travers
-                    break
 
-                nouvelle_ligne += direction[0]
-                nouvelle_colonne += direction[1]
+                    nouvelle_ligne += direction[0]
+                    nouvelle_colonne += direction[1]
 
-        return deplacements
+            return deplacements
+        else:
+            return deplacements
 
 
 
 class Fou(Piece):
-    def __init__(self, couleur):
+    def __init__(self, couleur,value):
         self.name = "Fou"
-        super().__init__(couleur, f"{self.name}_{couleur}")
+        super().__init__(couleur, f"{self.name}_{couleur}",value)
 
     def deplacements_possibles(self, position_actuelle, grille):
         lignes, colonnes = grille.taille
         deplacements = []
 
         directions = [(1, 1), (-1, -1), (1, -1), (-1, 1)]
+        if position_actuelle:
+            for direction in directions:
+                nouvelle_ligne, nouvelle_colonne = position_actuelle[0] + direction[0], position_actuelle[1] + direction[1]
 
-        for direction in directions:
-            nouvelle_ligne, nouvelle_colonne = position_actuelle[0] + direction[0], position_actuelle[1] + direction[1]
+                while 0 <= nouvelle_ligne < lignes and 0 <= nouvelle_colonne < colonnes:
+                    destination = (nouvelle_ligne, nouvelle_colonne)
+                    piece_destination = grille.get_piece(destination)
 
-            while 0 <= nouvelle_ligne < lignes and 0 <= nouvelle_colonne < colonnes:
-                destination = (nouvelle_ligne, nouvelle_colonne)
-                piece_destination = grille.get_piece(destination)
+                    if grille.case_est_vide(destination) or piece_destination.couleur != self.couleur:
+                        deplacements.append(destination)
 
-                if grille.case_est_vide(destination) or piece_destination.couleur != self.couleur:
-                    deplacements.append(destination)
-
-                    if not grille.case_est_vide(destination) and piece_destination.couleur != self.couleur:
-                        # Si la case n'est pas vide et contient une pièce ennemie, on peut la prendre
+                        if not grille.case_est_vide(destination) and piece_destination.couleur != self.couleur:
+                            # Si la case n'est pas vide et contient une pièce ennemie, on peut la prendre
+                            break
+                    else:
+                        # Si la case est occupée par une pièce alliée, on ne peut pas passer à travers
                         break
-                else:
-                    # Si la case est occupée par une pièce alliée, on ne peut pas passer à travers
-                    break
 
-                nouvelle_ligne += direction[0]
-                nouvelle_colonne += direction[1]
+                    nouvelle_ligne += direction[0]
+                    nouvelle_colonne += direction[1]
 
-        return deplacements
+            return deplacements
+        else : return deplacements
 
 
 class Roi(Piece):
-    def __init__(self, couleur):
+    def __init__(self, couleur,value):
         self.name = "Roi"
-        super().__init__(couleur, f"{self.name}_{couleur}")
+        super().__init__(couleur, f"{self.name}_{couleur}",value)
 
     def deplacements_possibles(self, position_actuelle, grille):
         lignes, colonnes = grille.taille
@@ -106,60 +114,62 @@ class Roi(Piece):
 
         # Déplacements possibles (haut, bas, gauche, droite, diagonales)
         directions = [(0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (-1, 1), (1, -1), (-1, -1)]
+        if position_actuelle:
+            for direction in directions:
+                nouvelle_ligne = position_actuelle[0] + direction[0]
+                nouvelle_colonne = position_actuelle[1] + direction[1]
 
-        for direction in directions:
-            nouvelle_ligne = position_actuelle[0] + direction[0]
-            nouvelle_colonne = position_actuelle[1] + direction[1]
+                if 0 <= nouvelle_ligne < lignes and 0 <= nouvelle_colonne < colonnes:
+                    destination = (nouvelle_ligne, nouvelle_colonne)
+                    piece_destination = grille.get_piece(destination)
 
-            if 0 <= nouvelle_ligne < lignes and 0 <= nouvelle_colonne < colonnes:
-                destination = (nouvelle_ligne, nouvelle_colonne)
-                piece_destination = grille.get_piece(destination)
+                    if grille.case_est_vide(destination) or piece_destination.couleur != self.couleur:
+                        deplacements.append(destination)
 
-                if grille.case_est_vide(destination) or piece_destination.couleur != self.couleur:
-                    deplacements.append(destination)
-
-        return deplacements
+            return deplacements
+        else :return deplacements
 
 
 
 class Reine(Piece):
-    def __init__(self, couleur):
+    def __init__(self, couleur,value):
         self.name = "Reine"
-        super().__init__(couleur, f"{self.name}_{couleur}")
+        super().__init__(couleur, f"{self.name}_{couleur}",value)
 
     def deplacements_possibles(self, coords_piece, grille):
         lignes, colonnes = grille.taille
         deplacements = []
 
         directions = [(0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (-1, 1), (1, -1), (-1, -1)]
+        if coords_piece:
+            for direction in directions:
+                nouvelle_ligne, nouvelle_colonne = coords_piece[0] + direction[0], coords_piece[1] + direction[1]
 
-        for direction in directions:
-            nouvelle_ligne, nouvelle_colonne = coords_piece[0] + direction[0], coords_piece[1] + direction[1]
+                while 0 <= nouvelle_ligne < lignes and 0 <= nouvelle_colonne < colonnes:
+                    destination = (nouvelle_ligne, nouvelle_colonne)
+                    piece_destination = grille.get_piece(destination)
 
-            while 0 <= nouvelle_ligne < lignes and 0 <= nouvelle_colonne < colonnes:
-                destination = (nouvelle_ligne, nouvelle_colonne)
-                piece_destination = grille.get_piece(destination)
+                    if grille.case_est_vide(destination) or piece_destination.couleur != self.couleur:
+                        deplacements.append(destination)
 
-                if grille.case_est_vide(destination) or piece_destination.couleur != self.couleur:
-                    deplacements.append(destination)
-
-                    if not grille.case_est_vide(destination) and piece_destination.couleur != self.couleur:
-                        # Si la case n'est pas vide et contient une pièce ennemie, on peut la prendre
+                        if not grille.case_est_vide(destination) and piece_destination.couleur != self.couleur:
+                            # Si la case n'est pas vide et contient une pièce ennemie, on peut la prendre
+                            break
+                    else:
+                        # Si la case est occupée par une pièce alliée, on ne peut pas passer à travers
                         break
-                else:
-                    # Si la case est occupée par une pièce alliée, on ne peut pas passer à travers
-                    break
 
-                nouvelle_ligne += direction[0]
-                nouvelle_colonne += direction[1]
+                    nouvelle_ligne += direction[0]
+                    nouvelle_colonne += direction[1]
 
-        return deplacements
+            return deplacements
+        else : return deplacements
 
 
 class Cavalier(Piece):
-    def __init__(self, couleur):
+    def __init__(self, couleur,value):
         self.name = "Cavalier"
-        super().__init__(couleur, f"{self.name}_{couleur}")
+        super().__init__(couleur, f"{self.name}_{couleur}",value)
 
     def deplacements_possibles(self, position_actuelle, grille):
         lignes, colonnes = 8,8
@@ -192,15 +202,16 @@ class Cavalier(Piece):
 
 
 class Pion(Piece):
-    def __init__(self, couleur):
+    def __init__(self, couleur,value):
         self.name = "Pion"
-        super().__init__(couleur, f"{self.name}_{couleur}")
+        super().__init__(couleur, f"{self.name}_{couleur}",value)
+        self.double_step = False  # Nouvelle variable pour suivre si le pion a avancé de deux cases
 
     def deplacements_possibles(self, coords_piece, grille):
         lignes, colonnes = 8, 8
         deplacements = []
 
-        direction = -1 if self.couleur == 'Blanc' else 1  # Inversion de la direction
+        direction = -1 if self.couleur == 'Blanc' else 1
 
         nouvelle_ligne = coords_piece[0] + direction
         nouvelle_colonne = coords_piece[1]
@@ -214,10 +225,10 @@ class Pion(Piece):
                 nouvelle_ligne = coords_piece[0] + 2 * direction
                 if grille.case_est_vide((nouvelle_ligne, nouvelle_colonne)):
                     deplacements.append((nouvelle_ligne, nouvelle_colonne))
+                    self.double_step = True  # Le pion a avancé de deux cases
 
         for delta_colonne in [-1, 1]:
             nouvelle_colonne = coords_piece[1] + delta_colonne
-            nouvelle_ligne = coords_piece[0] + direction
             if (
                 0 <= nouvelle_ligne < lignes and
                 0 <= nouvelle_colonne < colonnes and
@@ -226,7 +237,11 @@ class Pion(Piece):
             ):
                 deplacements.append((nouvelle_ligne, nouvelle_colonne))
 
-
         return deplacements
 
+    def peut_faire_en_passant(self):
+        return self.double_step  # Le pion peut faire en passant s'il a avancé de deux cases au tour précédent
+
+    def reset_double_step(self):
+        self.double_step = False  # Réinitialise la possibilité de faire en passant à faux
 
