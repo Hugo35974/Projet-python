@@ -132,7 +132,7 @@ class newBoard:
             for i in range(self.Rows):
                 for j in range(self.Cols):
                     if self.get_piece((i, j))!= None :
-                        if (self.get_piece((i, j)).value == piece.value) and (self.get_piece((i, j)).couleur == piece.couleur):
+                        if self.get_piece((i, j)) == piece:
                             return (i, j)
             return None
     
