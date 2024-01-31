@@ -1,5 +1,6 @@
 import pygame
 
+
 class Boutons:
     def __init__(self, win, nom, coordonnee, taille, fct):
         self.win = win
@@ -41,7 +42,7 @@ def draw_buttons(win):
     # Bouton "Paramètre"
     settings_button_rect = pygame.Rect(50, 300, 200, 50)
     pygame.draw.rect(win, (255, 255, 0), settings_button_rect)
-    settings_text = font.render("Paramètre", True, (0, 0, 0))
+    settings_text = font.render("ON/OFF Son", True, (0, 0, 0))
     win.blit(settings_text, (settings_button_rect.centerx - settings_text.get_width() // 2,
                              settings_button_rect.centery - settings_text.get_height() // 2))
     # Bouton "Quitter"

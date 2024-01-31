@@ -61,7 +61,7 @@ if __name__ == "__main__":
                 if play_button_rect.collidepoint(mouse_pos):
                     print("Jouer")
                 elif settings_button_rect.collidepoint(mouse_pos):
-                    print("Paramètre")
+                    print("Désactiver le Son")
                     bouton_son.gerer_son()
                     if not bouton_son.son_active:
                         pygame.mixer.music.stop()
