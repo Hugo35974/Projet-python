@@ -95,7 +95,19 @@ class newBoard:
             return Roi(couleur,col)
         else:
             return None
-
+        
+    def get_valid_moves(self, piece):
+        """
+        Renvoie tous les mouvements valides pour une pièce donnée.
+        """
+        valid_moves = []
+        for row in range(self.Rows):
+            for col in range(self.Cols):
+                target_position = (row, col)
+                if self.est_deplacement_valide(piece, target_position):
+                    valid_moves.append(target_position)
+        return valid_moves
+    
     def get_piece(self, position):
         if position:
             if 0 <= position[0] < self.Rows and 0 <= position[1] < self.Cols:
@@ -103,7 +115,17 @@ class newBoard:
             else:
                 return None
         else :return None
-
+    def get_all_pieces_of_color(self, color):
+            """
+            Renvoie toutes les pièces de la couleur spécifiée sur l'échiquier.
+            """
+            pieces_of_color = []
+            for row in range(self.Rows):
+                for col in range(self.Cols):
+                    piece = self.get_piece((row, col))
+                    if piece and piece.couleur == color:
+                        pieces_of_color.append(piece)
+            return pieces_of_color
     def est_deplacement_valide(self, piece, position):
         
         if piece and position in piece.deplacements_possibles(self.coordonnees_piece(piece), self):
