@@ -1,4 +1,5 @@
 import sys
+import time
 
 import pygame
 from pygame.locals import MOUSEBUTTONDOWN, QUIT
@@ -10,6 +11,13 @@ from Interface import newBoard
 from Moteur import IA
 
 
+def label2(texte,game_win):
+    
+    font = pygame.font.Font(None, 26)
+    game_win.fill(Black)
+    rendered_text = font.render(texte, True, (255, 255, 255))
+    game_win.blit(rendered_text, (20, 620))
+
 def initialize_game(width, height):
     pygame.init()
     win = pygame.display.set_mode((width, height))
@@ -19,6 +27,7 @@ def initialize_game(width, height):
 if __name__ == "__main__":
     # Initialiser la fenêtre Pygame
     game_win = initialize_game(1250, 800)
+# Initialisation du gestionnaire de jeu
 
     # Créer le plateau d'échecs
     chess_board = newBoard(game_win)  # Ajustez les paramètres en conséquence
@@ -38,19 +47,21 @@ if __name__ == "__main__":
     # Réglage du volume (de 0.0 à 1.0)
     pygame.mixer.music.set_volume(0.2)
     pygame.mixer.music.play(loops=5)  # Jouez le son d'échec
-    
+
+
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
+
             elif event.type == MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 
                 if play_button_rect.collidepoint(mouse_pos):
                     print("Jouer")
                 elif settings_button_rect.collidepoint(mouse_pos):
-                    print("Paramètre")
+                    print("Désactiver le Son")
                     bouton_son.gerer_son()
                     if not bouton_son.son_active:
                         pygame.mixer.music.stop()
@@ -74,26 +85,16 @@ if __name__ == "__main__":
                             piece = chess_board.get_piece(position)
                             waiting_for_second_click = True
                         except:
-                            print("Choisissez une pièce")
+                            texte ="Choisissez une pièce"
                     else:
                         print(piece)
                         if piece and piece.couleur == chess_board.current_player:
                             echec_resolu = echec_manager.est_mouvement_valide_resout_echec(piece, position)
                             print(echec_resolu)
                         else:
-                            print("Sélectionnez une pièce valide.")
+                            texte ="Sélectionnez une pièce valide."
                         waiting_for_second_click = False
-        # Vérifier si c'est le tour de l'IA de jouer
-        # if chess_board.current_player == 'Noir':
-        #     # Obtenir le meilleur mouvement de l'IA
-        #     meilleur_mouvement = ia.meilleurMouvement()
-
-        #     # Effectuer le mouvement de l'IA
-        #     chess_board.move(chess_board.get_piece(meilleur_mouvement.indexDepart),meilleur_mouvement.indexArrivee)
-
-
-        #     # Changer de joueur
-        #     chess_board.switch_player()
+    
 
 
         # Dessiner le plateau d'échecs

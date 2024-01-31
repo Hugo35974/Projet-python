@@ -200,11 +200,10 @@ class Cavalier(Piece):
 
         return deplacements
 
-
 class Pion(Piece):
-    def __init__(self, couleur,value):
+    def __init__(self, couleur, value):
         self.name = "Pion"
-        super().__init__(couleur, f"{self.name}_{couleur}",value)
+        super().__init__(couleur, f"{self.name}_{couleur}", value)
         self.double_step = False  # Nouvelle variable pour suivre si le pion a avancé de deux cases
 
     def deplacements_possibles(self, coords_piece, grille):
@@ -229,19 +228,14 @@ class Pion(Piece):
 
         for delta_colonne in [-1, 1]:
             nouvelle_colonne = coords_piece[1] + delta_colonne
+            nouvelle_ligne = coords_piece[0] + direction  # Nouvelle ligne ajoutée
             if (
                 0 <= nouvelle_ligne < lignes and
                 0 <= nouvelle_colonne < colonnes and
-                not grille.case_est_vide((nouvelle_ligne, nouvelle_colonne)) and
                 grille.piece_a_couleur((nouvelle_ligne, nouvelle_colonne)) != self.couleur
             ):
                 deplacements.append((nouvelle_ligne, nouvelle_colonne))
 
         return deplacements
 
-    def peut_faire_en_passant(self):
-        return self.double_step  # Le pion peut faire en passant s'il a avancé de deux cases au tour précédent
-
-    def reset_double_step(self):
-        self.double_step = False  # Réinitialise la possibilité de faire en passant à faux
 
