@@ -232,7 +232,8 @@ class Pion(Piece):
             if (
                 0 <= nouvelle_ligne < lignes and
                 0 <= nouvelle_colonne < colonnes and
-                grille.piece_a_couleur((nouvelle_ligne, nouvelle_colonne)) != self.couleur
+                grille.piece_a_couleur((nouvelle_ligne, nouvelle_colonne)) != self.couleur and
+                grille.piece_a_couleur((nouvelle_ligne, nouvelle_colonne)) != None
             ):
                 deplacements.append((nouvelle_ligne, nouvelle_colonne))
 
