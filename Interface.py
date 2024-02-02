@@ -25,7 +25,6 @@ class newBoard:
         # Créer une surface distincte pour le plateau d'échecs
         self.board_surface = pygame.Surface((self.Square * self.Cols, self.Square * self.Rows))
 
-
     def switch_player(self):
         if self.current_player == 'Blanc':
             self.current_player = 'Noir'
@@ -92,7 +91,8 @@ class newBoard:
         # Cette fonction change la couleur de fond de la case spécifiée
         ligne, colonne = case
         pygame.draw.rect(self.board_surface, couleur, (self.Square * colonne, self.Square * ligne, self.Square, self.Square))
-
+        self.Win.blit(self.board_surface, (self.GameBoard, 0))
+        
     def case_est_vide(self, position):
         if 0 <= position[0] < self.Rows and 0 <= position[1] < self.Cols:
             return self.Board[position[0]][position[1]] is None
@@ -216,6 +216,14 @@ class newBoard:
             # Placez la pièce à sa nouvelle position
             self.Board[position[0]][position[1]] = piece
 
+    def mouvement(self,coords_avant,position):
+        
+        if coords_avant is not None:
+            # Mettez à jour la case d'origine en la rendant vide
+            self.Board[coords_avant[0]][coords_avant[1]] = None
+            self.move_history.append((self.get_piece(coords_avant), coords_avant, position))
+            # Placez la pièce à sa nouvelle position
+            self.Board[position[0]][position[1]] = self.get_piece(coords_avant)
 
     def draw_Board(self):
         # Dessiner le plateau d'échecs sur la surface distincte
@@ -223,7 +231,6 @@ class newBoard:
         for row in range(self.Rows):
             for col in range(row % 2, self.Cols, 2):
                 pygame.draw.rect(self.board_surface, White, (self.Square * col, self.Square * row, self.Square, self.Square))
-
         # Afficher la surface du plateau d'échecs sur la fenêtre principale
         self.Win.blit(self.board_surface, (self.GameBoard, 0))
 

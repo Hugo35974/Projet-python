@@ -238,10 +238,6 @@ class Pion(Piece):
                 grille.piece_a_couleur((nouvelle_ligne, nouvelle_colonne)) != None
             ):
                 deplacements.append((nouvelle_ligne, nouvelle_colonne))
-        for case in deplacements:
-            grille.afficher_surbrillance(case, (0, 255, 0))
-            pygame.display.flip()
-            pygame.display.update()
         return deplacements
 
 
