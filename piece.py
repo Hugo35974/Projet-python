@@ -174,7 +174,7 @@ class Cavalier(Piece):
         super().__init__(couleur, f"{self.name}_{couleur}",value)
 
     def deplacements_possibles(self, position_actuelle, grille):
-        lignes, colonnes = 8,8
+        lignes, colonnes = 8, 8
         deplacements = []
 
         mouvements = [

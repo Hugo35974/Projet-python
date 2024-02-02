@@ -79,7 +79,7 @@ class newBoard:
                 return self.Board[position[0]][position[1]]
             else:
                 return None
-        else :return None
+        else : return None
 
     def est_deplacement_valide(self, piece, position):
 
@@ -163,9 +163,22 @@ class newBoard:
         for i in range(self.Rows):
             for j in range(self.Cols):
                 destination = (i, j)
-                if self.est_deplacement_valide(self.get_piece(roi_position), destination):
-                    # Si le roi peut effectuer un déplacement valide, ce n'est pas un échec et mat
-                    return False
+                roi = self.get_piece(roi_position)
+
+                # Vérifier si le déplacement est possible
+                if self.est_deplacement_valide(roi, destination):
+                    # Simuler le déplacement du roi
+                    piece_sur_destination = self.get_piece(destination)
+                    self.move(roi, destination)
+
+                    # Vérifier si le roi est toujours en échec après le déplacement simulé
+                    if not self.est_echec(couleur):
+                        # Annuler le déplacement simulé
+                        self.undo_last_move()
+                        return False
+
+                    # Annuler le déplacement simulé
+                    self.undo_last_move()
 
         # Vérifier si une autre pièce peut bloquer l'attaque
         for i in range(self.Rows):
@@ -176,12 +189,21 @@ class newBoard:
                     for destination in deplacements_possibles:
                         # Vérifier si la pièce peut bloquer l'attaque en se déplaçant
                         if self.est_deplacement_valide(piece, destination):
-                            return False
+                            # Simuler le déplacement de la pièce
+                            piece_sur_destination = self.get_piece(destination)
+                            self.move(piece, destination)
+
+                            # Vérifier si le roi est toujours en échec après le déplacement simulé
+                            if not self.est_echec(couleur):
+                                # Annuler le déplacement simulé
+                                self.undo_last_move()
+                                return False
+
+                            # Annuler le déplacement simulé
+                            self.undo_last_move()
 
         # Si aucune condition n'est remplie, c'est un échec et mat
         return True
-
-
 
     def move(self, piece, position):
         # Obtenez les coordonnées de la pièce avant le déplacement
