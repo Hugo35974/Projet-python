@@ -2,7 +2,6 @@
 from Interface import *
 from Main import *
 
-
 class GestionnaireEchec:
     def __init__(self, chess_board):
         self.chess_board = chess_board

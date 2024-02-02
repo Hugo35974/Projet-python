@@ -1,8 +1,6 @@
 import copy
 import sys
-
 import pygame
-
 from Couleurs import *
 from piece import *
 from regle import *
