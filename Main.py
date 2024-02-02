@@ -1,9 +1,7 @@
 import sys
 import time
-
 import pygame
 from pygame.locals import MOUSEBUTTONDOWN, QUIT
-
 from Boutons import *
 from Couleurs import *
 from GestionnaireEchec import *
@@ -94,7 +92,7 @@ if __name__ == "__main__":
                         else:
                             texte ="Sélectionnez une pièce valide."
                         waiting_for_second_click = False
-    
+
 
 
         # Dessiner le plateau d'échecs
