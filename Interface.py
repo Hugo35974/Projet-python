@@ -20,11 +20,11 @@ class newBoard:
         self.selected = None
         self.create_Board()
         self.move_history = []
-        self.taille = Couleurs.getRows(),Couleurs.getCols()
+        self.taille = Couleurs.getRows(), Couleurs.getCols()
         self.current_player = 'Blanc'
         # Créer une surface distincte pour le plateau d'échecs
         self.board_surface = pygame.Surface((self.Square * self.Cols, self.Square * self.Rows))
-
+        self.positions_surbrillees = []
 
     def switch_player(self):
         if self.current_player == 'Blanc':
@@ -32,7 +32,6 @@ class newBoard:
         else:
             self.current_player = 'Blanc'
 
-            
 
     def create_Board(self):
         for row in range(self.Rows):
@@ -40,9 +39,9 @@ class newBoard:
 
             for col in range(self.Cols):
                 if row == 1:
-                    self.Board[row][col] = Pion(Noir,col)
+                    self.Board[row][col] = Pion(Noir, col)
                 elif row == 6:
-                    self.Board[row][col] = Pion(Blanc,col)
+                    self.Board[row][col] = Pion(Blanc, col)
                 elif row == 0:
                     self.Board[row][col] = self.create_piece_for_row(Noir, row, col)
                 elif row == 7:
@@ -61,7 +60,7 @@ class newBoard:
             return Roi(couleur,col)
         else:
             return None
-        
+
     def get_valid_moves(self, piece):
         """
         Renvoie tous les mouvements valides pour une pièce donnée.
@@ -80,15 +79,23 @@ class newBoard:
                 return self.Board[position[0]][position[1]]
             else:
                 return None
-        else :return None
+        else : return None
 
     def est_deplacement_valide(self, piece, position):
-        
+
         if piece and position in piece.deplacements_possibles(self.coordonnees_piece(piece), self):
             return True
         else:
             return False
-        
+
+    def afficher_surbrillance(self, case, couleur):
+        # Cette fonction change la couleur de fond de la case spécifiée
+        ligne, colonne = case
+        pygame.draw.rect(self.board_surface, couleur,
+                         (self.Square * colonne, self.Square * ligne, self.Square, self.Square))
+        self.draw_pieces()  # Redessiner les pièces
+        self.Win.blit(self.board_surface, (self.GameBoard, 0))
+
     def case_est_vide(self, position):
         if 0 <= position[0] < self.Rows and 0 <= position[1] < self.Cols:
             return self.Board[position[0]][position[1]] is None
@@ -159,9 +166,22 @@ class newBoard:
         for i in range(self.Rows):
             for j in range(self.Cols):
                 destination = (i, j)
-                if self.est_deplacement_valide(self.get_piece(roi_position), destination):
-                    # Si le roi peut effectuer un déplacement valide, ce n'est pas un échec et mat
-                    return False
+                roi = self.get_piece(roi_position)
+
+                # Vérifier si le déplacement est possible
+                if self.est_deplacement_valide(roi, destination):
+                    # Simuler le déplacement du roi
+                    piece_sur_destination = self.get_piece(destination)
+                    self.move(roi, destination)
+
+                    # Vérifier si le roi est toujours en échec après le déplacement simulé
+                    if not self.est_echec(couleur):
+                        # Annuler le déplacement simulé
+                        self.undo_last_move()
+                        return False
+
+                    # Annuler le déplacement simulé
+                    self.undo_last_move()
 
         # Vérifier si une autre pièce peut bloquer l'attaque
         for i in range(self.Rows):
@@ -172,12 +192,21 @@ class newBoard:
                     for destination in deplacements_possibles:
                         # Vérifier si la pièce peut bloquer l'attaque en se déplaçant
                         if self.est_deplacement_valide(piece, destination):
-                            return False
+                            # Simuler le déplacement de la pièce
+                            piece_sur_destination = self.get_piece(destination)
+                            self.move(piece, destination)
+
+                            # Vérifier si le roi est toujours en échec après le déplacement simulé
+                            if not self.est_echec(couleur):
+                                # Annuler le déplacement simulé
+                                self.undo_last_move()
+                                return False
+
+                            # Annuler le déplacement simulé
+                            self.undo_last_move()
 
         # Si aucune condition n'est remplie, c'est un échec et mat
         return True
-
-
 
     def move(self, piece, position):
         # Obtenez les coordonnées de la pièce avant le déplacement
@@ -190,6 +219,14 @@ class newBoard:
             # Placez la pièce à sa nouvelle position
             self.Board[position[0]][position[1]] = piece
 
+    def mouvement(self,coords_avant,position):
+        
+        if coords_avant is not None:
+            # Mettez à jour la case d'origine en la rendant vide
+            self.Board[coords_avant[0]][coords_avant[1]] = None
+            self.move_history.append((self.get_piece(coords_avant), coords_avant, position))
+            # Placez la pièce à sa nouvelle position
+            self.Board[position[0]][position[1]] = self.get_piece(coords_avant)
 
     def draw_Board(self):
         # Dessiner le plateau d'échecs sur la surface distincte
@@ -197,7 +234,6 @@ class newBoard:
         for row in range(self.Rows):
             for col in range(row % 2, self.Cols, 2):
                 pygame.draw.rect(self.board_surface, White, (self.Square * col, self.Square * row, self.Square, self.Square))
-
         # Afficher la surface du plateau d'échecs sur la fenêtre principale
         self.Win.blit(self.board_surface, (self.GameBoard, 0))
 

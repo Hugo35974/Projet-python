@@ -1,12 +1,14 @@
 import random
+import time
 
 import numpy as np
+import pygame
 
 import Couleurs
 
 
 class Piece:
-    def __init__(self, couleur,name,value):
+    def __init__(self, couleur, name, value):
         self.couleur = couleur
         self.name = name
         self.image = self.SVG()
@@ -172,7 +174,7 @@ class Cavalier(Piece):
         super().__init__(couleur, f"{self.name}_{couleur}",value)
 
     def deplacements_possibles(self, position_actuelle, grille):
-        lignes, colonnes = 8,8
+        lignes, colonnes = 8, 8
         deplacements = []
 
         mouvements = [
@@ -236,7 +238,6 @@ class Pion(Piece):
                 grille.piece_a_couleur((nouvelle_ligne, nouvelle_colonne)) != None
             ):
                 deplacements.append((nouvelle_ligne, nouvelle_colonne))
-
         return deplacements
 
 
