@@ -1,6 +1,7 @@
 
 from Interface import *
-from Main import *
+from Main import label2
+
 
 class GestionnaireEchec:
     def __init__(self, chess_board):
