@@ -1,9 +1,10 @@
 import copy
 import sys
+
 import pygame
+
 from Couleurs import *
 from piece import *
-from regle import *
 
 
 class newBoard:
@@ -30,39 +31,6 @@ class newBoard:
             self.current_player = 'Noir'
         else:
             self.current_player = 'Blanc'
-
-    def coefficientPointsSiPeutEtreMangee(self, position):
-        if 0 <= position[0] < self.Rows and 0 <= position[1] < self.Cols:
-            piece = self.Board[position[0]][position[1]]
-            if piece:
-                # Ajoutez ici votre logique pour déterminer le coefficient de points
-                # en fonction de si la pièce à la position spécifiée peut être mangée.
-                # Vous pouvez retourner la valeur appropriée en fonction de votre logique.
-                return 2  # Exemple : si la pièce peut être mangée, retourne 1
-        return 1  # Par défaut, retourne 0 si la position est hors limites ou si la case est vide
-    
-    def play(self, position_from, position_to):
-        piece = self.Board.get_piece(position_from)
-
-        if piece and piece.couleur == self.current_player:
-            if self.Board.est_deplacement_valide(piece, position_to):
-                self.Board.move(piece, position_to)
-                
-                # Vérifier si le joueur actuel est en échec
-                if self.Board.est_en_echec(self.current_player):
-                    print(f"Le joueur {self.current_player} est en échec!")
-
-                self.switch_player()
-
-                # Vérifier si le joueur actuel est en échec et mat
-                if self.Board.est_en_echec_et_mat(self.current_player):
-                    print(f"Échec et mat, {self.current_player} a perdu!")
-                    # Ici, vous pourriez prendre d'autres mesures, comme terminer le jeu.
-
-            else:
-                print("Déplacement non valide pour la pièce sélectionnée.")
-        else:
-            print("Aucune pièce valide sélectionnée pour le joueur en cours.")
 
             
 
@@ -113,17 +81,7 @@ class newBoard:
             else:
                 return None
         else :return None
-    def get_all_pieces_of_color(self, color):
-            """
-            Renvoie toutes les pièces de la couleur spécifiée sur l'échiquier.
-            """
-            pieces_of_color = []
-            for row in range(self.Rows):
-                for col in range(self.Cols):
-                    piece = self.get_piece((row, col))
-                    if piece and piece.couleur == color:
-                        pieces_of_color.append(piece)
-            return pieces_of_color
+
     def est_deplacement_valide(self, piece, position):
         
         if piece and position in piece.deplacements_possibles(self.coordonnees_piece(piece), self):
@@ -137,15 +95,6 @@ class newBoard:
         else:
             return False
 
-    def piece_a_couleur(self, position):
-        if 0 <= position[0] < self.Rows and 0 <= position[1] < self.Cols:
-            piece = self.Board[position[0]][position[1]]
-            if piece:
-                return piece.couleur
-            else:
-                return None
-        else:
-            return None
         
     def coordonnees_piece(self, piece):
             
@@ -189,20 +138,6 @@ class newBoard:
 
             # Mettez à jour d'autres éléments si nécessaire
 
-    def clone_board(self):
-        new_board = newBoard(self.Win)
-
-        # Copier les pièces en utilisant copy.deepcopy
-        new_board.Board = copy.deepcopy(self.Board)
-
-        # Copier le joueur actuel
-        new_board.current_player = self.current_player
-
-        return new_board
-    
-    def set_piece(self, position, piece):
-        row, col = position
-        self.Board[row][col] = piece
 
     def est_en_echec_et_mat(self, couleur):
         roi_position = self.trouver_position_roi(couleur)
@@ -293,3 +228,13 @@ class newBoard:
             self.Board[indexArrivee[0]][indexArrivee[1]] = piece  # Place the piece in the destination position
         else:
             print("No piece found at the starting position.")
+
+    def coefficientPointsSiPeutEtreMangee(self, position):
+        if 0 <= position[0] < self.Rows and 0 <= position[1] < self.Cols:
+            piece = self.Board[position[0]][position[1]]
+            if piece:
+                # Ajoutez ici votre logique pour déterminer le coefficient de points
+                # en fonction de si la pièce à la position spécifiée peut être mangée.
+                # Vous pouvez retourner la valeur appropriée en fonction de votre logique.
+                return 2  # Exemple : si la pièce peut être mangée, retourne 1
+        return 1  # Par défaut, retourne 0 si la position est hors limites ou si la case est vide
