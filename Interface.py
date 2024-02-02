@@ -20,7 +20,7 @@ class newBoard:
         self.selected = None
         self.create_Board()
         self.move_history = []
-        self.taille = Couleurs.getRows(),Couleurs.getCols()
+        self.taille = Couleurs.getRows(), Couleurs.getCols()
         self.current_player = 'Blanc'
         # Créer une surface distincte pour le plateau d'échecs
         self.board_surface = pygame.Surface((self.Square * self.Cols, self.Square * self.Rows))
@@ -32,7 +32,6 @@ class newBoard:
         else:
             self.current_player = 'Blanc'
 
-            
 
     def create_Board(self):
         for row in range(self.Rows):
@@ -40,9 +39,9 @@ class newBoard:
 
             for col in range(self.Cols):
                 if row == 1:
-                    self.Board[row][col] = Pion(Noir,col)
+                    self.Board[row][col] = Pion(Noir, col)
                 elif row == 6:
-                    self.Board[row][col] = Pion(Blanc,col)
+                    self.Board[row][col] = Pion(Blanc, col)
                 elif row == 0:
                     self.Board[row][col] = self.create_piece_for_row(Noir, row, col)
                 elif row == 7:
@@ -83,12 +82,17 @@ class newBoard:
         else :return None
 
     def est_deplacement_valide(self, piece, position):
-        
+
         if piece and position in piece.deplacements_possibles(self.coordonnees_piece(piece), self):
             return True
         else:
             return False
-        
+
+    def afficher_surbrillance(self, case, couleur):
+        # Cette fonction change la couleur de fond de la case spécifiée
+        ligne, colonne = case
+        pygame.draw.rect(self.board_surface, couleur, (self.Square * colonne, self.Square * ligne, self.Square, self.Square))
+
     def case_est_vide(self, position):
         if 0 <= position[0] < self.Rows and 0 <= position[1] < self.Cols:
             return self.Board[position[0]][position[1]] is None

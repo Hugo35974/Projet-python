@@ -1,12 +1,14 @@
 import random
+import time
 
 import numpy as np
+import pygame
 
 import Couleurs
 
 
 class Piece:
-    def __init__(self, couleur,name,value):
+    def __init__(self, couleur, name, value):
         self.couleur = couleur
         self.name = name
         self.image = self.SVG()
@@ -236,7 +238,10 @@ class Pion(Piece):
                 grille.piece_a_couleur((nouvelle_ligne, nouvelle_colonne)) != None
             ):
                 deplacements.append((nouvelle_ligne, nouvelle_colonne))
-
+        for case in deplacements:
+            grille.afficher_surbrillance(case, (0, 255, 0))
+            pygame.display.flip()
+            pygame.display.update()
         return deplacements
 
 

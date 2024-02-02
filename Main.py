@@ -81,6 +81,9 @@ if __name__ == "__main__":
                         try:
                             piece = chess_board.get_piece(position)
                             waiting_for_second_click = True
+                            # Obtenez les déplacements possibles pour la pièce sélectionnée
+                            deplacements_possibles = piece.deplacements_possibles(piece, chess_board)
+
                         except:
                             texte ="Choisissez une pièce"
                     else:
