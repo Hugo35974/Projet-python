@@ -24,6 +24,7 @@ class newBoard:
         self.current_player = 'Blanc'
         # Créer une surface distincte pour le plateau d'échecs
         self.board_surface = pygame.Surface((self.Square * self.Cols, self.Square * self.Rows))
+        self.positions_surbrillees = []
 
     def switch_player(self):
         if self.current_player == 'Blanc':
@@ -59,7 +60,7 @@ class newBoard:
             return Roi(couleur,col)
         else:
             return None
-        
+
     def get_valid_moves(self, piece):
         """
         Renvoie tous les mouvements valides pour une pièce donnée.
@@ -90,9 +91,11 @@ class newBoard:
     def afficher_surbrillance(self, case, couleur):
         # Cette fonction change la couleur de fond de la case spécifiée
         ligne, colonne = case
-        pygame.draw.rect(self.board_surface, couleur, (self.Square * colonne, self.Square * ligne, self.Square, self.Square))
+        pygame.draw.rect(self.board_surface, couleur,
+                         (self.Square * colonne, self.Square * ligne, self.Square, self.Square))
+        self.draw_pieces()  # Redessiner les pièces
         self.Win.blit(self.board_surface, (self.GameBoard, 0))
-        
+
     def case_est_vide(self, position):
         if 0 <= position[0] < self.Rows and 0 <= position[1] < self.Cols:
             return self.Board[position[0]][position[1]] is None

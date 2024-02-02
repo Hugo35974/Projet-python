@@ -59,14 +59,6 @@ def main():
     pygame.mixer.music.play(loops=5)  # Jouez le son d'échec
 
     while True:
-        # Dessiner le plateau d'échecs
-        chess_board.draw_Board()
-        chess_board.draw_pieces()
-        # Dessiner les boutons
-        play_button_rect, settings_button_rect, quit_button_rect = draw_buttons(game_win)
-        # Afficher le bouton son
-        bouton_son.afficher(game_win, main_button)
-
         echec_manager = GestionnaireEchec(chess_board)
 
         for event in pygame.event.get():
@@ -100,14 +92,19 @@ def main():
                     position = (row, col)
 
                     if not waiting_for_second_click:
-                        try:
-                            piece = chess_board.get_piece(position)
-                            waiting_for_second_click = True
-                            # Obtenez les déplacements possibles pour la pièce sélectionnée
-                            deplacements_possibles = piece.deplacements_possibles(piece, chess_board)
+                        piece = chess_board.get_piece(position)
+                        waiting_for_second_click = True
 
-                        except:
-                            texte = "Choisissez une pièce"
+                        # Vérifiez si la pièce est une instance de la classe Pion
+                        if isinstance(piece, Pion):
+                            deplacements_possibles = piece.deplacements_possibles(position, chess_board)
+                            print("Surbrillance positions:", deplacements_possibles)
+                            for d in deplacements_possibles:
+                                chess_board.afficher_surbrillance(d, (0, 255, 0))
+                            pygame.display.update()
+                        else:
+                            texte = "Choisissez une pièce valide"
+
                     else:
                         print(piece)
                         if piece and piece.couleur == chess_board.current_player:
@@ -115,9 +112,24 @@ def main():
                             print(echec_resolu)
                         else:
                             texte = "Sélectionnez une pièce valide."
+                        chess_board.positions_surbrillees = []
                         waiting_for_second_click = False
+
+        # Dessiner le plateau d'échecs
+        chess_board.draw_Board()
+        chess_board.draw_pieces()
+        # Dessiner les boutons
+        play_button_rect, settings_button_rect, quit_button_rect = draw_buttons(game_win)
+        # Afficher le bouton son
+        bouton_son.afficher(game_win, main_button)
+
+        # Afficher la surbrillance à l'extérieur de la boucle d'événements pour qu'elle reste visible
+        for surbrillance_position in chess_board.positions_surbrillees:
+            chess_board.afficher_surbrillance(surbrillance_position, (0, 255, 0))
         pygame.display.flip()
         pygame.display.update()
+
+
 
 
 if __name__ == "__main__":
