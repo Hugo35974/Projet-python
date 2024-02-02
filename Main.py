@@ -1,12 +1,12 @@
 import sys
-import time
+
 import pygame
 from pygame.locals import MOUSEBUTTONDOWN, QUIT
+
 from Boutons import *
 from Couleurs import *
 from GestionnaireEchec import *
 from Interface import newBoard
-from Moteur import IA
 
 
 def label2(texte,game_win):
