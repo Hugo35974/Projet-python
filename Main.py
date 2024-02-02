@@ -35,7 +35,6 @@ if __name__ == "__main__":
     echec = False
 
     echec_manager = GestionnaireEchec(chess_board)
-    ia = IA(echequier=chess_board, couleur='Noir')
     pygame.mixer.init()
     pygame.mixer.music.load("jeu_dechec.mp3")
     # Initialiser un bouton

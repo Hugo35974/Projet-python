@@ -137,7 +137,16 @@ class newBoard:
             self.Board[to_coords[0]][to_coords[1]] = None
 
             # Mettez à jour d'autres éléments si nécessaire
-
+            
+    def piece_a_couleur(self, position):
+        if 0 <= position[0] < self.Rows and 0 <= position[1] < self.Cols:
+            piece = self.Board[position[0]][position[1]]
+            if piece:
+                return piece.couleur
+            else:
+                return None
+        else:
+            return None
 
     def est_en_echec_et_mat(self, couleur):
         roi_position = self.trouver_position_roi(couleur)
