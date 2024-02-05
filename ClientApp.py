@@ -50,16 +50,17 @@ def main():
     try:
         while True:
             msg = clientChat.GetReceivedMessages()
+            print(msg)
             try:
-                string_data = msg.replace(')(', '),(')
+                string_data = msg[-1].replace(')(', '),(')
                 tuple_data = ast.literal_eval(string_data)
                 coords_avant, position = tuple_data
             except :
                 coords_avant = None
                 position = None
             if coords_avant and position:
-                echec_manager.chess_board.mouvement(piece, position)
-                
+                echec_manager.est_mouvement_valide_resout_echec(chess_board.get_piece(coords_avant), position)
+
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
@@ -102,6 +103,7 @@ def main():
                         else:
                             if piece and piece.couleur == chess_board.current_player:
                                 echec_manager.est_mouvement_valide_resout_echec(piece, position)
+                                
                                 clientChat.send_message(str(positionpiece)+str(position))
                             else:
                                 texte ="Sélectionnez une pièce valide."

@@ -44,7 +44,7 @@ class ChatClient:
             receive_thread.start()
 
             # Send a test message after connecting
-            self.send_message('GetGameState')
+            self.send_message()
         except Exception as e:
             print(f"Error connecting to the server: {e}")
 

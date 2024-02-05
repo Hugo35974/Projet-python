@@ -15,15 +15,15 @@ class ChatServer:
         return self.received_messages
 
     def broadcast(self, message):
-        # afin d'éviter une concatenation post send, on va écrire 'lafin' du message avec '\end'
-        message = (message.decode('utf-8') + '\\end').encode('utf-8')
-        for client in self.clients:
-            try:
-                client.send(message)
-            except socket.error:
-                # Remove the client if unable to send a message to it
-                self.clients.remove(client)
-        time.sleep(0.05)
+            # afin d'éviter une concatenation post send, on va écrire 'lafin' du message avec '\end'
+            message = (message.decode('utf-8') + '\\end').encode('utf-8')
+            for client in self.clients:
+                try:
+                    client.send(message)
+                except socket.error:
+                    # Remove the client if unable to send a message to it
+                    self.clients.remove(client)
+            time.sleep(0.05)
 
     def send_to_client(self, client_index, message, sender_name):
 
@@ -48,7 +48,7 @@ class ChatServer:
                 ClientName = f"Joueur{self.clients.index(client_socket)}"
                 print(f"Received message: {data.decode('utf-8')} from {ClientName} ({client_socket.getpeername()})")
                 self.received_messages.append([ClientName, data.decode('utf-8')])
-                self.broadcast(('You:' + ClientName).encode('utf-8'))
+                self.broadcast((self.received_messages[-1][-1]).encode('utf-8'))
                 time.sleep(0.1)
 
             except socket.error:
