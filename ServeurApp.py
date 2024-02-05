@@ -41,16 +41,10 @@ def main():
             # on va actualiser l'etat du jeu toute les 0.4 secondes, pour eviter que les messages ne se melangent
             time.sleep(0.4)
             if len(chat_server.GetClients()) == 1:
-                # on peut lancer la logique du jeu tt le monde est la !
-                # on va donc envoyer a chaque client le GameState ( etat du jeu)
-  
-                # on va maintenant regarder si on a recu des messages de la part des clients
-                # messages qui sont forcément la carte que l'on a tiré.
-                msg = chat_server.GetReceivedMessages()
-                chat_server.broadcast(('GameState:' + str(msg)).encode('utf-8'))
-                try :
 
-                    chat_server.send_to_client(str(msg[-1][1]))
+                try :
+                    chat_server.broadcast((chat_server.GetReceivedMessages()).encode('utf-8'))
+
                 except :
                     chat_server.EmptyMessages(nbPlayer)
 
