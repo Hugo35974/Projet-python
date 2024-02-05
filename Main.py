@@ -1,4 +1,6 @@
 import sys
+import time
+
 import pygame
 from pygame.locals import MOUSEBUTTONDOWN, QUIT
 
@@ -100,10 +102,53 @@ def main():
                             deplacements_possibles = piece.deplacements_possibles(position, chess_board)
                             print("Surbrillance positions:", deplacements_possibles)
                             for d in deplacements_possibles:
-                                chess_board.afficher_surbrillance(d, (0, 255, 0))
+                                ligne, colonne = d
+                                x = chess_board.GameBoard + colonne * chess_board.Square + chess_board.Square // 2
+                                y = ligne * chess_board.Square + chess_board.Square // 2
+                                pygame.draw.circle(game_win, (0, 255, 255), (x, y), chess_board.Square // 6)
                             pygame.display.update()
                         else:
                             texte = "Choisissez une pièce valide"
+                        if isinstance(piece, Cavalier):
+                            deplacements_possibles = piece.deplacements_possibles(position, chess_board)
+                            for d in deplacements_possibles:
+                                ligne, colonne = d
+                                x = chess_board.GameBoard + colonne * chess_board.Square + chess_board.Square // 2
+                                y = ligne * chess_board.Square + chess_board.Square // 2
+                                pygame.draw.circle(game_win, (0, 255, 255), (x, y), chess_board.Square // 6)
+                            pygame.display.update()
+                        if isinstance(piece, Tour):
+                            deplacements_possibles = piece.deplacements_possibles(position, chess_board)
+                            for d in deplacements_possibles:
+                                ligne, colonne = d
+                                x = chess_board.GameBoard + colonne * chess_board.Square + chess_board.Square // 2
+                                y = ligne * chess_board.Square + chess_board.Square // 2
+                                pygame.draw.circle(game_win, (0, 255, 255), (x, y), chess_board.Square // 6)
+                            pygame.display.update()
+                        if isinstance(piece, Fou):
+                            deplacements_possibles = piece.deplacements_possibles(position, chess_board)
+                            for d in deplacements_possibles:
+                                ligne, colonne = d
+                                x = chess_board.GameBoard + colonne * chess_board.Square + chess_board.Square // 2
+                                y = ligne * chess_board.Square + chess_board.Square // 2
+                                pygame.draw.circle(game_win, (0, 255, 255), (x, y), chess_board.Square // 6)
+                            pygame.display.update()
+                        if isinstance(piece, Roi):
+                            deplacements_possibles = piece.deplacements_possibles(position, chess_board)
+                            for d in deplacements_possibles:
+                                ligne, colonne = d
+                                x = chess_board.GameBoard + colonne * chess_board.Square + chess_board.Square // 2
+                                y = ligne * chess_board.Square + chess_board.Square // 2
+                                pygame.draw.circle(game_win, (0, 255, 255), (x, y), chess_board.Square // 6)
+                            pygame.display.update()
+                        if isinstance(piece, Reine):
+                            deplacements_possibles = piece.deplacements_possibles(position, chess_board)
+                            for d in deplacements_possibles:
+                                ligne, colonne = d
+                                x = chess_board.GameBoard + colonne * chess_board.Square + chess_board.Square // 2
+                                y = ligne * chess_board.Square + chess_board.Square // 2
+                                pygame.draw.circle(game_win, (0, 255, 255), (x, y), chess_board.Square // 6)
+                            pygame.display.update()
 
                     else:
                         print(piece)
@@ -114,6 +159,10 @@ def main():
                             texte = "Sélectionnez une pièce valide."
                         chess_board.positions_surbrillees = []
                         waiting_for_second_click = False
+                # Afficher la surbrillance à l'extérieur de la boucle d'événements pour qu'elle reste visible
+                #for surbrillance_position in chess_board.positions_surbrillees:
+                #    chess_board.afficher_surbrillance(surbrillance_position, (0, 255, 0))
+                time.sleep(0.6)
 
         # Dessiner le plateau d'échecs
         chess_board.draw_Board()
@@ -123,9 +172,6 @@ def main():
         # Afficher le bouton son
         bouton_son.afficher(game_win, main_button)
 
-        # Afficher la surbrillance à l'extérieur de la boucle d'événements pour qu'elle reste visible
-        for surbrillance_position in chess_board.positions_surbrillees:
-            chess_board.afficher_surbrillance(surbrillance_position, (0, 255, 0))
         pygame.display.flip()
         pygame.display.update()
 

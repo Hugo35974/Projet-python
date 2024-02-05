@@ -91,8 +91,9 @@ class newBoard:
     def afficher_surbrillance(self, case, couleur):
         # Cette fonction change la couleur de fond de la case spécifiée
         ligne, colonne = case
-        pygame.draw.rect(self.board_surface, couleur,
-                         (self.Square * colonne, self.Square * ligne, self.Square, self.Square))
+        pygame.draw.circle(self.board_surface, couleur,
+                           (colonne * self.Square + self.Square // 2, ligne * self.Square + self.Square // 2),
+                           self.Square // 6)
         self.draw_pieces()  # Redessiner les pièces
         self.Win.blit(self.board_surface, (self.GameBoard, 0))
 
