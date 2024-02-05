@@ -1,7 +1,9 @@
 import time
+
 import Main
 from Interface import *
 from Main import label2
+
 
 class GestionnaireEchec:
     def __init__(self, chess_board):
@@ -43,5 +45,4 @@ class GestionnaireEchec:
             self.chess_board.switch_player()
             return True
         else:
-            print("Déplacement non valide. Rejouez.")
             return False
