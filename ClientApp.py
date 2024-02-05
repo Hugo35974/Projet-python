@@ -50,7 +50,6 @@ def main():
     try:
         while True:
             msg = clientChat.GetReceivedMessages()
-            print(msg)
             try:
                 string_data = msg[-1].replace(')(', '),(')
                 tuple_data = ast.literal_eval(string_data)
@@ -95,9 +94,58 @@ def main():
                                 piece = chess_board.get_piece(position)
                                 positionpiece = position
                                 waiting_for_second_click = True
-                                # Obtenez les déplacements possibles pour la pièce sélectionnée
-                                deplacements_possibles = piece.deplacements_possibles(piece, chess_board)
-
+                                # Vérifiez si la pièce est une instance de la classe Pion
+                                if isinstance(piece, Pion):
+                                    deplacements_possibles = piece.deplacements_possibles(position, chess_board)
+                                    print("Surbrillance positions:", deplacements_possibles)
+                                    for d in deplacements_possibles:
+                                        ligne, colonne = d
+                                        x = chess_board.GameBoard + colonne * chess_board.Square + chess_board.Square // 2
+                                        y = ligne * chess_board.Square + chess_board.Square // 2
+                                        pygame.draw.circle(game_win, (0, 255, 255), (x, y), chess_board.Square // 6)
+                                    pygame.display.update()
+                                else:
+                                    texte = "Choisissez une pièce valide"
+                                if isinstance(piece, Cavalier):
+                                    deplacements_possibles = piece.deplacements_possibles(position, chess_board)
+                                    for d in deplacements_possibles:
+                                        ligne, colonne = d
+                                        x = chess_board.GameBoard + colonne * chess_board.Square + chess_board.Square // 2
+                                        y = ligne * chess_board.Square + chess_board.Square // 2
+                                        pygame.draw.circle(game_win, (0, 255, 255), (x, y), chess_board.Square // 6)
+                                    pygame.display.update()
+                                if isinstance(piece, Tour):
+                                    deplacements_possibles = piece.deplacements_possibles(position, chess_board)
+                                    for d in deplacements_possibles:
+                                        ligne, colonne = d
+                                        x = chess_board.GameBoard + colonne * chess_board.Square + chess_board.Square // 2
+                                        y = ligne * chess_board.Square + chess_board.Square // 2
+                                        pygame.draw.circle(game_win, (0, 255, 255), (x, y), chess_board.Square // 6)
+                                    pygame.display.update()
+                                if isinstance(piece, Fou):
+                                    deplacements_possibles = piece.deplacements_possibles(position, chess_board)
+                                    for d in deplacements_possibles:
+                                        ligne, colonne = d
+                                        x = chess_board.GameBoard + colonne * chess_board.Square + chess_board.Square // 2
+                                        y = ligne * chess_board.Square + chess_board.Square // 2
+                                        pygame.draw.circle(game_win, (0, 255, 255), (x, y), chess_board.Square // 6)
+                                    pygame.display.update()
+                                if isinstance(piece, Roi):
+                                    deplacements_possibles = piece.deplacements_possibles(position, chess_board)
+                                    for d in deplacements_possibles:
+                                        ligne, colonne = d
+                                        x = chess_board.GameBoard + colonne * chess_board.Square + chess_board.Square // 2
+                                        y = ligne * chess_board.Square + chess_board.Square // 2
+                                        pygame.draw.circle(game_win, (0, 255, 255), (x, y), chess_board.Square // 6)
+                                    pygame.display.update()
+                                if isinstance(piece, Reine):
+                                    deplacements_possibles = piece.deplacements_possibles(position, chess_board)
+                                    for d in deplacements_possibles:
+                                        ligne, colonne = d
+                                        x = chess_board.GameBoard + colonne * chess_board.Square + chess_board.Square // 2
+                                        y = ligne * chess_board.Square + chess_board.Square // 2
+                                        pygame.draw.circle(game_win, (0, 255, 255), (x, y), chess_board.Square // 6)
+                                    pygame.display.update()
                             except:
                                 texte ="Choisissez une pièce"
                         else:
@@ -108,8 +156,7 @@ def main():
                             else:
                                 texte ="Sélectionnez une pièce valide."
                             waiting_for_second_click = False
-
-    
+                    time.sleep(0.6)
             
             
             chess_board.draw_Board()
